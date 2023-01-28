@@ -12,8 +12,9 @@ namespace Lib_MCPlayerStats
         /// Load player Stats from file
         /// </summary>
         /// <param name="file">File path</param>
+        /// <param name="rmc">Remove all "minecraft:"</param>
         /// <returns></returns>
-        public static Task<Player_Stats> LoadPlayerAsync(string file)
+        public static Task<Player_Stats> LoadPlayerAsync(string file, bool rmc = true)
         {
             Player_Stats player = new();
 
@@ -23,7 +24,17 @@ namespace Lib_MCPlayerStats
                 return Task.FromResult(player);     //If Deserialized object is null return empty stats object with ErrorMessage in Username
             }
 
-            Stats_Internal? loaded = JsonConvert.DeserializeObject<Stats_Internal>(File.ReadAllText(file).Replace("minecraft:", "")); //Desearialize Stats file to internal object
+            Stats_Internal? loaded;
+
+            if (rmc)
+            {
+                loaded = JsonConvert.DeserializeObject<Stats_Internal>(File.ReadAllText(file).Replace("minecraft:", "")); //Desearialize Stats file to internal object
+            }
+            else
+            {
+                loaded = JsonConvert.DeserializeObject<Stats_Internal>(File.ReadAllText(file)); //Desearialize Stats file to internal object and remove all "minecraft:"
+            }
+
 
             if (loaded == null)
             {
@@ -51,8 +62,9 @@ namespace Lib_MCPlayerStats
         /// Load all player stats from files in folder
         /// </summary>
         /// <param name="folder">Folder path</param>
+        /// <param name="rmc">Remove all "minecraft:"</param>
         /// <returns></returns>
-        public static async Task<List<Player_Stats>> LoadPlayersAsync(string folder)
+        public static async Task<List<Player_Stats>> LoadPlayersAsync(string folder, bool rmc)
         {
             List<Player_Stats> stats = new();
 
@@ -60,7 +72,7 @@ namespace Lib_MCPlayerStats
             {
                 if (file.EndsWith(".json"))
                 {
-                    stats.Add(await LoadPlayerAsync(file));
+                    stats.Add(await LoadPlayerAsync(file, rmc));
                 }
             }
 
