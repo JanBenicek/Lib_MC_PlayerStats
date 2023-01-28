@@ -23,7 +23,7 @@ namespace Lib_MCPlayerStats
                 return Task.FromResult(player);     //If Deserialized object is null return empty stats object with ErrorMessage in Username
             }
 
-            Stats_Internal? loaded = JsonConvert.DeserializeObject<Stats_Internal>(File.ReadAllText(file)); //Desearialize Stats file to internal object
+            Stats_Internal? loaded = JsonConvert.DeserializeObject<Stats_Internal>(File.ReadAllText(file).Replace("minecraft:", "")); //Desearialize Stats file to internal object
 
             if (loaded == null)
             {
@@ -31,7 +31,7 @@ namespace Lib_MCPlayerStats
                 return Task.FromResult(player);     //If Deserialized object is null return empty stats object with ErrorMessage in Username
             }
 
-            player.Username = GetNameByUUID(file.Split(@"/").Last().Replace("-", "").Replace(".json", ""));
+            player.Username = GetNameByUUID(file.Split(@"/").Last().Replace("-", "").Replace(".json", "")); //Get Username by UUID
 
             //Move data from loaded stats to object with username
             player.picked_up = loaded.stats.picked_up;
@@ -56,7 +56,7 @@ namespace Lib_MCPlayerStats
         {
             List<Player_Stats> stats = new();
 
-            foreach (string file in Directory.GetFiles(folder))
+            foreach (string file in Directory.GetFiles(folder)) //Search all .json files for load in selected directory
             {
                 if (file.EndsWith(".json"))
                 {
