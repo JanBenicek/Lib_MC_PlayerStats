@@ -10,15 +10,13 @@ namespace Lib_MCPlayerStats
     {
         public string? id;
         public string? name;
-        public Cape? properties;
+        public List<Cape>? Properties;
     }
 
-    internal class Cape
+    public class Cape
     {
         public string? name;
-        public string? value;
-        public string? signature;
+
+        public dynamic? value;
     }
-
-
 }
