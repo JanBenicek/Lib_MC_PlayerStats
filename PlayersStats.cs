@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System.Runtime.InteropServices;
+using System;
 using System.Text.Json.Serialization;
 
 namespace Lib_MCPlayerStats
@@ -42,7 +44,14 @@ namespace Lib_MCPlayerStats
                 return Task.FromResult(player);     //If Deserialized object is null return empty stats object with ErrorMessage in Username
             }
 
-            player.Username = GetNameByUUID(file.Split(@"/").Last().Replace("-", "").Replace(".json", "")); //Get Username by UUID
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                player.Username = GetNameByUUID(file.Split(@"\").Last().Replace("-", "").Replace(".json", "")); //Get Username by UUID on Windows
+            }
+            else
+            {
+                player.Username = GetNameByUUID(file.Split(@"/").Last().Replace("-", "").Replace(".json", "")); //Get Username by UUID
+            }
 
             //Move data from loaded stats to object with username
             player.picked_up = loaded.stats.picked_up;
