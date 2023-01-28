@@ -77,12 +77,9 @@ namespace Lib_MCPlayerStats
         {
             List<Player_Stats> stats = new();
 
-            foreach (string file in Directory.GetFiles(folder)) //Search all .json files for load in selected directory
+            foreach (string file in Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly)) //Search all .json files for load in selected directory
             {
-                if (file.EndsWith(".json"))
-                {
-                    stats.Add(await LoadPlayerAsync(file, rmc));
-                }
+                stats.Add(await LoadPlayerAsync(file, rmc));
             }
 
             return stats;
